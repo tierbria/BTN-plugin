@@ -1,0 +1,42 @@
+h2.widget-title {
+  font-family: "Helvetica", Arial, Verdana;
+  font-size: 275%;
+  margin-bottom: 1%;
+  text-align: center;
+  text-decoration: underline;
+}
+ul.bt_widget {
+  margin-left: 0;
+}
+ul.bt_widget li {
+  background-color: white;
+  border-bottom: 1px solid black;
+  margin:0 0 10px 0; 
+  list-style:none;
+  line-height:150%;
+  padding: 0 2% 0 2%;
+}
+ul.bt_widget img {
+  border: 1px solid black;
+  height: 20em;
+  margin-bottom: 1%;
+  width: 100%;
+}
+ul.bt_widget li a {
+  color: black;
+  font-family: "Helvetica", Arial, Verdana;
+  font-size: 200%;
+  font-weight: bold;
+  line-height: 125%;
+  margin-left: 1%;
+  text-decoration: none;
+}
+ul.bt_widget li a:hover {
+  text-decoration: underline;
+}
+ul.bt_widget li span {
+  display: block;
+  font-family: "MS serif", Times, Georgia;
+  font-size: 105%;
+  margin: 0 0 1% 2%;
+}
