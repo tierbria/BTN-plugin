@@ -14,98 +14,6 @@ function plugin_enqueue_scripts (){
 	} 
 add_action( 'wp_enqueue_scripts','plugin_enqueue_scripts' );
 
-//Create the widget
-class bt_my_plugin extends WP_Widget {
-	//constructor
-	public function __construct() {
-		$widget_ops = array(
-			'classname' => 'bt_my_plugin', 
-			'description' => __( 'A widget that will display 5 posts from the "portfolio" post type in a set order, and will also display the featured image for each post.'
-				)
-			);
-		// Adds a class to the widget and provides a description on the Widget page to describe what the widget does.
-		parent::__construct('briac_widget', __('Briac Widget', 'bt'), $widget_ops);
-	}
-
-	/*
-	*
-	*this is what people will see (USER SIDE)
-	*
-	*/
-	public function widget( $args, $instance ) {
-		extract($args);
-		$title = apply_filters('widget_title', $instance['title']);
-		$numberoflistings = $instance['numberoflistings'];
-		echo $before_widget;
-		if($title) {
-			echo $before_title . $title . $after_title;
-		}
-		$this->getMyListings($numberoflistings);
-		echo $after_widget;
-	}
-
-	function getMyListings($numberoflistings) {
-		global $post;
-		add_image_size('bt_widget_size', 85, 45, false);
-		$listings = new WP_Query();
-		$listings->query('post_type=Portfolio&posts_per_page=3&order=DESC' . $numberoflistings);
-		if($listings->found_posts>0) {
-			echo '<ul class="bt_widget">';
-				while($listings->have_posts()) {
-					$listings->the_post();
-					$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID, 'bt_widget_size') : '<div class="noThumb"></div>';
-					$listItem = '<li>' . $image;
-					$listItem .= '<a href="' . get_permalink() . '">';
-					$listItem .= get_the_title() . '</a>';
-					$listItem .= '<span>' . get_the_excerpt() . '';
-					$listItem .= '<a class="widgetmore" href="' . get_permalink() . '">';
-					$listItem .= '<p>Learn More... </p>' . '</a></span></li>';
-					echo $listItem;
-				}
-			echo '</ul>';
-			wp_reset_postdata();
-		}
-	}
-
-	/*This function creates the widget in the WordPress administration, 
-	*
-	*this is were you enter your data to be displayed on the the website 
-	*
-	*/
-public function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 
-			'title' => '',
-			'count' => 0
-			)
-		);
-		$title = strip_tags($instance['title']);
-		$count = $instance['count'] ? 'checked="checked"' : '';
-		$numberoflistings = esc_attr($instance['numberoflistings']);
-?>
-		<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
-		</p>
-<?php }
-	
-
-	// Sanitizes, saves and submits the user-generated content.
-	public function update( $new_instance, $old_instance ) {
-		$instance = $old_instance;
-		$new_instance = wp_parse_args( (array) $new_instance, array(
-			'title' => '',
-			'count' => 0
-			)
-		);
-		$instance['title'] = strip_tags($new_instance['title']);
-		$instance['count'] = $new_instance['count'] ? 1 : 0;
-
-		return $instance;
-	}
-}
-
-//register widget
-add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));
-
 /*
 	register the custom post types
 */
@@ -151,3 +59,91 @@ function custom_post_type () {
 add_action('init','custom_post_type')
 
 ?>
+
+<?php
+
+//Create the widget
+class bt_my_plugin extends WP_Widget {
+	//constructor
+	public function __construct() {
+		$widget_ops = array(
+			'classname' => 'bt_my_plugin', 
+			'description' => __( 'A widget that will display 5 posts from the "portfolio" post type in a set order, and will also display the featured image for each post.'
+				)
+			);
+		// Adds a class to the widget and provides a description on the Widget page to describe what the widget does.
+		parent::__construct('briac_widget', __('Briac Widget', 'bt'), $widget_ops);
+	}
+
+	/*
+	*
+	*this is what people will see (USER SIDE)
+	*
+	*/
+	public function widget( $args, $instance ) {
+		extract($args);
+		$title = apply_filters('widget_title', $instance['title']);
+		$numberoflistings = $instance['numberoflistings'];
+		echo $before_widget;
+		if($title) {
+			echo $before_title . $title . $after_title;
+		}
+		$this->getMyListings($numberoflistings);
+		echo $after_widget;
+	}
+
+	function getMyListings($numberoflistings) {
+		global $post;
+		$listings = new WP_Query();
+		$listings->query('post_type=Portfolio&showposts=3&order=desc' . $numberoflistings);
+		if($listings->found_posts>0) {
+			echo '<ul class="bt_widget">';
+				while($listings->have_posts()) {
+					$listings->the_post();
+					$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID) : '<div class="missingthumb"></div>';
+					$listItem = '<li>' . $image;
+					$listItem .= '<a href="' . get_permalink() . '">';
+					$listItem .= get_the_title() . '</a>';
+					$listItem .= '<span>' . get_the_excerpt() . '';
+					$listItem .= '<a class="widgetmore" href="' . get_permalink() . '">';
+					$listItem .= '<p>Learn More... </p>' . '</a></span></li>';
+					echo $listItem;
+				}
+			echo '</ul>';
+			wp_reset_postdata();
+		}
+	}
+
+	/*This function creates the widget in the WordPress administration, 
+	*
+	*this is were you enter your data to be displayed on the the website 
+	*
+	*/
+public function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 
+			'title' => ''
+			)
+		);
+		$title = strip_tags($instance['title']);
+	?>
+
+		<p>
+			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
+		</p>
+
+	<?php }
+
+	// Sanitizes, saves and submits the user-generated content.
+	public function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$new_instance = wp_parse_args( (array) $new_instance, array(
+			'title' => ''			)
+		);
+		$instance['title'] = strip_tags($new_instance['title']);
+
+		return $instance;
+	}
+}
+
+//register widget
+add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));
