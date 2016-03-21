@@ -11,7 +11,7 @@ ul.bt_widget {
 }
 ul.bt_widget li {
   background-color: #fafafa;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #000d1a;
   height: auto;
   margin:0 0 10px 0; 
   list-style:none;
