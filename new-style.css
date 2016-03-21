@@ -12,7 +12,7 @@ ul.bt_widget {
 ul.bt_widget li {
   background-color: #fafafa;
   border-bottom: 1px solid black;
-  height: 475px;
+  height: auto;
   margin:0 0 10px 0; 
   list-style:none;
   line-height:150%;
