@@ -5,12 +5,12 @@
 * Description: Plugin to create custom post type 
 * Author: Briac Tier & Naima Nadeem 
 * Version: 1.0 
-* Author URI: phoenix.sheridanc.on.ca/~ccit34
+* Author URI: phoenix.sheridanc.on.ca/~ccit3473
 */
 
 // Enqueue Plugin Stylesheet
 function plugin_enqueue_scripts (){
-		wp_enqueue_style ('newplugin', plugins_url ('new-plugins/css/style.css')); 
+		wp_enqueue_style ('new-plugin', plugins_url ('new-plugin/css/new-style.css')); 
 	} 
 add_action( 'wp_enqueue_scripts','plugin_enqueue_scripts' );
 
@@ -21,18 +21,16 @@ class bt_my_plugin extends WP_Widget {
 	public function __construct() {
 		$widget_ops = array(
 			'classname' => 'bt_my_plugin', 
-			'description' => __( 'A widget that will display a set number of posts from the "portfolio" post type in a set order, and will also display the featured image for each post.'
+			'description' => __( 'A widget that will display 5 posts from the "portfolio" post type in a set order, and will also display the featured image for each post.'
 				)
 			);
 		// Adds a class to the widget and provides a description on the Widget page to describe what the widget does.
 		parent::__construct('briac_widget', __('Briac Widget', 'bt'), $widget_ops);
 	}
 
-
 	/*
 	*
 	*this is what people will see (USER SIDE)
-	*
 	*
 	*/
 	public function widget( $args, $instance ) {
@@ -51,13 +49,13 @@ class bt_my_plugin extends WP_Widget {
 		global $post;
 		add_image_size('bt_widget_size', 85, 45, false);
 		$listings = new WP_Query();
-		$listings->query('post_type=Portfolio&posts_per_page=3' . $numberoflistings);
+		$listings->query('post_type=Portfolio&posts_per_page=6&order=ASC' . $numberoflistings);
 		if($listings->found_posts>0) {
 			echo '<ul class="bt_widget">';
 				while($listings->have_posts()) {
 					$listings->the_post();
 					$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID, 'bt_widget_size') : '<div class="noThumb"></div>';
-					$listitem = '<li>' . $image;
+					$listItem = '<li>' . $image;
 					$listItem .= '<a href="' . get_permalink() . '">';
 					$listItem .= get_the_title() . '</a>';
 					$listItem .= '<span> Added' . get_the_date() . '</span></li>';
@@ -70,24 +68,21 @@ class bt_my_plugin extends WP_Widget {
 
 	/*This function creates the widget in the WordPress administration, 
 	*
-	*
 	*this is were you enter your data to be displayed on the the website 
-	*
 	*
 	*/
 public function form( $instance ) {
 		$instance = wp_parse_args( (array) $instance, array( 
 			'title' => '',
-			'count' => 0			)
+			'count' => 0
+			)
 		);
 		$title = strip_tags($instance['title']);
 		$count = $instance['count'] ? 'checked="checked"' : '';
 		$numberoflistings = esc_attr($instance['numberoflistings']);
 ?>
 		<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
-		<p>
-			<input class="checkbox" type="checkbox" <?php echo $count; ?> id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>" /> <label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('Show post counts'); ?></label>
+			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
 		</p>
 <?php }
 	
