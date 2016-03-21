@@ -14,7 +14,6 @@ function plugin_enqueue_scripts (){
 	} 
 add_action( 'wp_enqueue_scripts','plugin_enqueue_scripts' );
 
-
 //Create the widget
 class bt_my_plugin extends WP_Widget {
 	//constructor
@@ -49,7 +48,7 @@ class bt_my_plugin extends WP_Widget {
 		global $post;
 		add_image_size('bt_widget_size', 85, 45, false);
 		$listings = new WP_Query();
-		$listings->query('post_type=Portfolio&posts_per_page=6&order=ASC' . $numberoflistings);
+		$listings->query('post_type=Portfolio&posts_per_page=3&order=DESC' . $numberoflistings);
 		if($listings->found_posts>0) {
 			echo '<ul class="bt_widget">';
 				while($listings->have_posts()) {
@@ -58,7 +57,9 @@ class bt_my_plugin extends WP_Widget {
 					$listItem = '<li>' . $image;
 					$listItem .= '<a href="' . get_permalink() . '">';
 					$listItem .= get_the_title() . '</a>';
-					$listItem .= '<span> Added' . get_the_date() . '</span></li>';
+					$listItem .= '<span>' . get_the_excerpt() . '';
+					$listItem .= '<a class="widgetmore" href="' . get_permalink() . '">';
+					$listItem .= '<p>Learn More... </p>' . '</a></span></li>';
 					echo $listItem;
 				}
 			echo '</ul>';
