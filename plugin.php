@@ -78,7 +78,7 @@ class bt_my_plugin extends WP_Widget {
 
 	/*
 	*
-	* Set up the widget that will be seen by site visitors
+	* Set up the user side of the widget. Display the widget title and 'Portoflio' posts.
 	*
 	*/
 	public function widget( $args, $instance ) {
@@ -96,7 +96,7 @@ class bt_my_plugin extends WP_Widget {
 	/*
 	*
 	* A custom query that returns the post's title and Learn More text as links to the rest of the content. 
-	* The query also returns a thumbnail and the excerpt. There will be only 3 posts returned, they will
+	* The query also returns a thumbnail and the excerpt. There will be only 3 posts returned, they 
 	* will be from the custom 'Portfolio' post type and they will appear in descending order.
 	*
 	*/
@@ -124,7 +124,7 @@ class bt_my_plugin extends WP_Widget {
 
 	/*
 	*
-	* Create the widget in the WordPress administration sidebar menu. 
+	* Create the widget in the WordPress administration dashboard menu. 
 	*
 	*/
 	public function form( $instance ) {
@@ -160,3 +160,32 @@ class bt_my_plugin extends WP_Widget {
 *
 */
 add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));
+
+
+// Adds the btn-breakthenews shortcode. This shortcode will display the latest post from the 'portfolio' custom post type.
+add_shortcode('btn-breakthenews', 'custom_post_type_shortcode');
+
+function custom_post_type_shortcode() {
+	$args = array(
+		'post_type' => 'portfolio',
+		'showposts' => '1',
+		'order' => desc
+		);
+	$string = '';
+	$query = new WP_Query($args);
+	if($query->have_posts()) {
+		$string .= '<ul class="bt_shortcode">';
+		while($query->have_posts()) {
+			$query->the_post();
+			$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID) : '<div class="missingthumbnail"></div>';
+			$string = '<li>' . $image;
+			$string .= '<a href="' . get_permalink() . '">';
+			$string .= get_the_title() . '</a>';
+			$string .= '<a class="shortcodemore" href="' . get_permalink() . '">';
+			$string .= '<p>Learn More... </p>' . '</a></li>';
+		}
+		$string .= '</ul>';
+	}
+	wp_reset_postdata();
+	return $string;
+}
