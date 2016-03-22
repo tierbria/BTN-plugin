@@ -1,6 +1,6 @@
 <?php
 /* 
-* Plugin Name: Custom Post Type 
+* Plugin Name: BTM Events Plugin
 * Plugin URI:  phoenix.sheridanc.on.ca/~ccit3473
 * Description: Plugin to create custom post type 
 * Author: Briac Tier & Naima Nadeem 
