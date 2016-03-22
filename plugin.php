@@ -59,9 +59,7 @@ function custom_post_type () {
 add_action('init','custom_post_type');
 
 /*
-*
 * Create the widget
-*
 */
 
 class bt_my_plugin extends WP_Widget {
@@ -77,9 +75,7 @@ class bt_my_plugin extends WP_Widget {
 	}
 
 	/*
-	*
 	* Set up the user side of the widget. Display the widget title and 'Portoflio' posts.
-	*
 	*/
 	public function widget( $args, $instance ) {
 		extract($args);
@@ -124,9 +120,7 @@ class bt_my_plugin extends WP_Widget {
 	}
 
 	/*
-	*
 	* Create the widget in the WordPress administration dashboard menu. 
-	*
 	*/
 	public function form( $instance ) {
 		$instance = wp_parse_args( (array) $instance, array( 
@@ -156,17 +150,13 @@ class bt_my_plugin extends WP_Widget {
 }
 
 /*
-*
 * Register the widget.
-*
 */
 add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));
 
 
 /*
-*
 * Adds the btn-breakthenews shortcode. This shortcode will display the latest post from the 'portfolio' custom post type.
-*
 */
 add_shortcode('btn-breakthenews', 'custom_post_portfolio_shortcode');
 
