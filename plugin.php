@@ -8,17 +8,20 @@
 * Author URI: phoenix.sheridanc.on.ca/~ccit3473
 */
 
-// Enqueue Plugin Stylesheet
+// Enqueue the plugin stylesheet.
 function plugin_enqueue_scripts (){
 		wp_enqueue_style ('new-plugin', plugins_url ('new-plugin/css/new-style.css')); 
 	} 
 add_action( 'wp_enqueue_scripts','plugin_enqueue_scripts' );
 
 /*
-	register the custom post types
+*
+* Register the custom 'Portfolio' post type.
+*
 */
 
 function custom_post_type () { 
+	// An array of labels for the custom 'Porfolio' post type.
 	$labels = array (
 		'name' => 'Portfolio',
 		'singular_name' => 'Portfolio',
@@ -32,7 +35,7 @@ function custom_post_type () {
 		'parent_item_colon' => 'Parent Item'
 	);
 
-	// arguments for custom post types
+	// An array of arguments for custom 'Porfolio' post types.
 	$args = array( 
 		'labels' => $labels, 
 		'public' => true,
@@ -53,7 +56,6 @@ function custom_post_type () {
 		'exclude_from_search' => false, 
 		);
 
-	//register post types
 	register_post_type('portfolio', $args);
 }
 add_action('init','custom_post_type')
@@ -62,61 +64,72 @@ add_action('init','custom_post_type')
 
 <?php
 
-//Create the widget
-class bt_my_plugin extends WP_Widget {
+/*
+*
+* Create the widget
+*
+*/
+
+class bt_plugin extends WP_Widget {
 	//constructor
 	public function __construct() {
 		$widget_ops = array(
-			'classname' => 'bt_my_plugin', 
-			'description' => __( 'A widget that will display 5 posts from the "portfolio" post type in a set order, and will also display the featured image for each post.'
+			'classname' => 'bt_plugin', 
+			'description' => __( 'Adds 3 posts from the "portfolio" post type in a descending order.'
 				)
 			);
-		// Adds a class to the widget and provides a description on the Widget page to describe what the widget does.
-		parent::__construct('briac_widget', __('Briac Widget', 'bt'), $widget_ops);
+		// A description on the Widget page to describe what the widget does.
+		parent::__construct('event_widget', __('Event Widget', 'bt'), $widget_ops);
 	}
 
 	/*
 	*
-	*this is what people will see (USER SIDE)
+	* Set up the widget that will be seen by site visitors
 	*
 	*/
 	public function widget( $args, $instance ) {
 		extract($args);
 		$title = apply_filters('widget_title', $instance['title']);
-		$numberoflistings = $instance['numberoflistings'];
 		echo $before_widget;
 		if($title) {
 			echo $before_title . $title . $after_title;
 		}
-		$this->getMyListings($numberoflistings);
+		$this->get_my_events($btm);
 		echo $after_widget;
 	}
 
-	function getMyListings($numberoflistings) {
+	/*
+	*
+	* A custom query that returns the post's title and Learn More text as links to the rest of the content. 
+	* The query also returns a thumbnail and the excerpt. There will be only 3 posts returned, they will
+	* will be from the custom 'Portfolio' post type and they will appear in descending order.
+	*
+	*/
+	function get_my_events($btm) {
 		global $post;
-		$listings = new WP_Query();
-		$listings->query('post_type=Portfolio&showposts=3&order=desc' . $numberoflistings);
-		if($listings->found_posts>0) {
+		$events = new WP_Query();
+		$events->query('post_type=Portfolio&showposts=3&order=desc' . $btm);
+		if($events->found_posts>0) {
 			echo '<ul class="bt_widget">';
-				while($listings->have_posts()) {
-					$listings->the_post();
-					$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID) : '<div class="missingthumb"></div>';
-					$listItem = '<li>' . $image;
-					$listItem .= '<a href="' . get_permalink() . '">';
-					$listItem .= get_the_title() . '</a>';
-					$listItem .= '<span>' . get_the_excerpt() . '';
-					$listItem .= '<a class="widgetmore" href="' . get_permalink() . '">';
-					$listItem .= '<p>Learn More... </p>' . '</a></span></li>';
-					echo $listItem;
+				while($events->have_posts()) {
+					$events->the_post();
+					$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID) : '<div class="missingthumbnail"></div>';
+					$eventItem = '<li>' . $image;
+					$eventItem .= '<a href="' . get_permalink() . '">';
+					$eventItem .= get_the_title() . '</a>';
+					$eventItem .= '<span>' . get_the_excerpt() . '';
+					$eventItem .= '<a class="widgetmore" href="' . get_permalink() . '">';
+					$eventItem .= '<p>Learn More... </p>' . '</a></span></li>';
+					echo $eventItem;
 				}
 			echo '</ul>';
 			wp_reset_postdata();
 		}
 	}
 
-	/*This function creates the widget in the WordPress administration, 
+	/*
 	*
-	*this is were you enter your data to be displayed on the the website 
+	* Create the widget in the WordPress administration sidebar menu. 
 	*
 	*/
 public function form( $instance ) {
@@ -126,14 +139,14 @@ public function form( $instance ) {
 		);
 		$title = strip_tags($instance['title']);
 	?>
-
+		<!-- Creates a 'Title' label and an input for the user to enter a custom widget title. -->
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
 		</p>
 
 	<?php }
 
-	// Sanitizes, saves and submits the user-generated content.
+	// Sanitize, save and submit the custom title created by the user.
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 		$new_instance = wp_parse_args( (array) $new_instance, array(
@@ -145,5 +158,9 @@ public function form( $instance ) {
 	}
 }
 
-//register widget
-add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));
+/*
+*
+* Register the widget.
+*
+*/
+add_action('widgets_init', create_function('', 'return register_widget("bt_plugin");'));
