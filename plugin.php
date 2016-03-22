@@ -107,6 +107,7 @@ class bt_my_plugin extends WP_Widget {
 		if($events->found_posts>0) {
 			echo '<ul class="bt_widget">';
 				while($events->have_posts()) {
+					// Will concatenate the variables and output the 'eventItem' string.
 					$events->the_post();
 					$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID) : '<div class="missingthumbnail"></div>';
 					$eventItem = '<li>' . $image;
@@ -162,13 +163,21 @@ class bt_my_plugin extends WP_Widget {
 add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));
 
 
-// Adds the btn-breakthenews shortcode. This shortcode will display the latest post from the 'portfolio' custom post type.
-add_shortcode('btn-breakthenews', 'custom_post_type_shortcode');
+/*
+*
+* Adds the btn-breakthenews shortcode. This shortcode will display the latest post from the 'portfolio' custom post type.
+*
+*/
+add_shortcode('btn-breakthenews', 'custom_post_portfolio_shortcode');
 
-function custom_post_type_shortcode() {
+function custom_post_portfolio_shortcode() {
+	// An array of arguments that the shortcode will look for when selecting a post from the custom post type.
 	$args = array(
+		// Only show posts with post type 'portfolio'.
 		'post_type' => 'portfolio',
+		// Only show 1 post from the post type.
 		'showposts' => '1',
+		// Show the posts that are returned in descending order.
 		'order' => desc
 		);
 	$string = '';
@@ -176,6 +185,7 @@ function custom_post_type_shortcode() {
 	if($query->have_posts()) {
 		$string .= '<ul class="bt_shortcode">';
 		while($query->have_posts()) {
+			// Will concatenate the variables and output the shortcode as a string.
 			$query->the_post();
 			$image = (has_post_thumbnail($post->ID)) ? get_the_post_thumbnail($post->ID) : '<div class="missingthumbnail"></div>';
 			$string = '<li>' . $image;
