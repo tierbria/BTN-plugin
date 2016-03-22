@@ -50,3 +50,52 @@ a.widgetmore p {
   font-size: 50%;
   margin: 0;
 }
+
+.post-txt img {
+  border: 1px solid #000d1a;
+  height: 10em;
+  width: 100%;
+  margin-bottom: 1%;
+
+}
+
+.post-txt li a {
+  color: #000d1a;
+  font-family: "Helvetica", Arial, Verdana;
+  font-size: 200%;
+  font-weight: bold;
+  line-height: 125%;
+  margin-left: 1%;
+  text-decoration: none;
+}
+
+.post-txt li a {
+  margin-left: 2%;
+}
+
+.post-txt li a:hover {
+  text-decoration: underline;
+}
+
+.post-txt li {
+  list-style: none; 
+  width: 80%;
+  margin: 0 10% 0 10%;
+  border: 1px solid #000d1a;
+}
+
+.post-txt li {
+  list-style: none; 
+}
+
+a.shortcodemore p {
+   color: #000d1a;
+  font-family: "Helvetica", Arial, Verdana;
+  font-size: 50%;
+  font-weight: bold;
+  line-height: 80%;
+  margin-left: 1%;
+  text-decoration: none;
+  margin-left: 3%;
+  margin-bottom: 0%;
+}
