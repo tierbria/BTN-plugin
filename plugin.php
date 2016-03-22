@@ -15,9 +15,7 @@ function plugin_enqueue_scripts (){
 add_action( 'wp_enqueue_scripts','plugin_enqueue_scripts' );
 
 /*
-*
 * Register the custom 'Portfolio' post type.
-*
 */
 
 function custom_post_type () { 
@@ -58,11 +56,7 @@ function custom_post_type () {
 
 	register_post_type('portfolio', $args);
 }
-add_action('init','custom_post_type')
-
-?>
-
-<?php
+add_action('init','custom_post_type');
 
 /*
 *
@@ -70,16 +64,16 @@ add_action('init','custom_post_type')
 *
 */
 
-class bt_plugin extends WP_Widget {
+class bt_my_plugin extends WP_Widget {
 	//constructor
 	public function __construct() {
 		$widget_ops = array(
-			'classname' => 'bt_plugin', 
-			'description' => __( 'Adds 3 posts from the "portfolio" post type in a descending order.'
+			'classname' => 'bt_my_plugin', 
+			'description' => __( 'Adds 3 posts from the portfolio post type in a descending order.'
 				)
 			);
 		// A description on the Widget page to describe what the widget does.
-		parent::__construct('event_widget', __('Event Widget', 'bt'), $widget_ops);
+		parent::__construct('briac_widget', __('Events Widget', 'bt'), $widget_ops);
 	}
 
 	/*
@@ -90,6 +84,7 @@ class bt_plugin extends WP_Widget {
 	public function widget( $args, $instance ) {
 		extract($args);
 		$title = apply_filters('widget_title', $instance['title']);
+		$btm = $instance['btm'];
 		echo $before_widget;
 		if($title) {
 			echo $before_title . $title . $after_title;
@@ -132,13 +127,14 @@ class bt_plugin extends WP_Widget {
 	* Create the widget in the WordPress administration sidebar menu. 
 	*
 	*/
-public function form( $instance ) {
+	public function form( $instance ) {
 		$instance = wp_parse_args( (array) $instance, array( 
 			'title' => ''
 			)
 		);
 		$title = strip_tags($instance['title']);
 	?>
+
 		<!-- Creates a 'Title' label and an input for the user to enter a custom widget title. -->
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
@@ -163,4 +159,4 @@ public function form( $instance ) {
 * Register the widget.
 *
 */
-add_action('widgets_init', create_function('', 'return register_widget("bt_plugin");'));
+add_action('widgets_init', create_function('', 'return register_widget("bt_my_plugin");'));

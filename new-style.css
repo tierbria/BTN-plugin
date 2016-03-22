@@ -43,6 +43,9 @@ ul.bt_widget li span {
   font-size: 105%;
   margin: 1% 0 1% 2%;
 }
+a.read-more {
+  font-size: 100em;
+}
 a.widgetmore p {
   font-size: 50%;
   margin: 0;
