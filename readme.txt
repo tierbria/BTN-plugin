@@ -1,4 +1,4 @@
-Plugin Name: BTM Events Plugin
+Plugin Name: BTN Events Plugin
 Plugin URI: http://phoenix.sheridanc.on.ca/~ccit3473/
 Descirption: A WordPress plugin that adds a custom post type, a widget, and a shortcode.
 Author: Briac Tier & Naima Nadeem
